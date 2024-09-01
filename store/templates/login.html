@@ -1,0 +1,43 @@
+{% extends 'base.html'%} 
+
+{% block content %}
+
+<!DOCTYPE html>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Login Page</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Login user here...</p>
+        </div>
+    </div>
+</header>
+
+    <!-- Main content -->
+    <div class="container mt-5">
+        <form method= "POST" action = "{% url 'login' %}">
+            {% csrf_token %} <!--Used for protecting against hackers-->
+            <div class="form-group">
+              <input type="text" class="form-control" name="username"  placeholder="Enter Your Username">
+            </div>
+
+        
+            <br></br>
+            <div class="form-group">
+              <input name="password" class="form-control" placeholder="Enter Your Password">
+            </div>
+            
+            <br></br>
+            <button class="btn btn-secondary">Login</button>
+          </form>
+        
+    </div>
+
+    <!-- Bootstrap JS and dependencies (optional) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+{% endblock%}
