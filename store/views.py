@@ -72,6 +72,17 @@ def register_user(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+
+def product_search(request):
+    query = request.GET.get('q')
+    if query:
+        products = Product.objects.filter(name__icontains=query)
+    else:
+        products = Product.objects.all()
+        
+    return render(request, 'home.html', {'products': products})
+    
+
 @login_required
 def update_user(request):
     user_form = UserUpdateForm(instance = request.user)
