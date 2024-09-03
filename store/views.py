@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-
-from .forms import UserUpdateForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import UserUpdateForm, CustomPasswordChangeForm
 from .models import Product, Category
 from django.contrib.auth import authenticate, login,logout # for login and authenticating users
 from django.contrib.auth.decorators import login_required
@@ -74,22 +74,24 @@ def register_user(request):
 
 @login_required
 def update_user(request):
+    user_form = UserUpdateForm(instance = request.user)
+    password_form = CustomPasswordChangeForm(request.user)
+    
     if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            # Save the form and update the user
-            form.save()
-
-            # Re-login the user to update session data
-            login(request, request.user)
-
-            messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('home')
-    else:
-        form = UserUpdateForm(instance=request.user)
-
-    return render(request, 'update_user.html', {'form': form})
-
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = CustomPasswordChangeForm(request.user, request.POST)
         
-
+        if user_form.is_valid() and password_form.is_valid():
+            user_form.save()
+            user = password_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your profile and password were successfully changed')
+            return redirect('update_user')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+        
+    return render(request, 'update_user.html', {
+        'form': user_form,
+        'password_form': password_form
+    })
    
